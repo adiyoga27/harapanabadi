@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
-use Laravel\Passport\HasApiTokens;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -277,17 +277,6 @@ class User extends Authenticatable
     public function media()
     {
         return $this->morphOne(\App\Media::class, 'model');
-    }
-
-    /**
-     * Find the user instance for the given username.
-     *
-     * @param  string  $username
-     * @return \App\User
-     */
-    public function findForPassport($username)
-    {
-        return $this->where('username', $username)->first();
     }
 
     /**

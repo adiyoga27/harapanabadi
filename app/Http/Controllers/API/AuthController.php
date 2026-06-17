@@ -5,49 +5,23 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
-/**
- * API Authentication Controller
- *
- * Handles login, logout, and token management for API access.
- */
 class AuthController extends Controller
 {
-    private $clientId;
-    private $clientSecret;
-
-    public function __construct()
-    {
-        $this->clientId = env('OAUTH_CLIENT_ID', 1);
-        $this->clientSecret = env('OAUTH_CLIENT_SECRET', 'wEJ2u9vAycxICEdv6k1PkmGNpOzYW60scrhds22v');
-    }
-
-    private function getClientId()
-    {
-        return $this->clientId ?: 1;
-    }
-
-    private function getClientSecret()
-    {
-        return $this->clientSecret ?: 'wEJ2u9vAycxICEdv6k1PkmGNpOzYW60scrhds22v';
-    }
-
     /**
-     * Login to get OAuth2 token.
+     * Login to get Sanctum API token.
      *
-     * Use your username and password to receive a Bearer token.
-     * Default credentials can be configured in .env (API_USERNAME / API_PASSWORD).
-     *
-     * @bodyParam username string required The username. Example: admin
-     * @bodyParam password string required The password. Example: Adiyoga1996
+     * @bodyParam username string required The username.
+     * @bodyParam password string required The password.
      *
      * @response {
+     *   "success": true,
      *   "token_type": "Bearer",
-     *   "expires_in": 31536000,
-     *   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGci...",
-     *   "refresh_token": "def50200..."
+     *   "expires_in": 1296000,
+     *   "access_token": "1|...",
+     *   "user": { ... }
      * }
      */
     public function login(Request $request)
@@ -87,34 +61,14 @@ class AuthController extends Controller
             ], 403);
         }
 
-        $request->request->add([
-            'grant_type' => 'password',
-            'client_id' => $this->getClientId(),
-            'client_secret' => $this->getClientSecret(),
-            'username' => $request->username,
-            'password' => $request->password,
-            'scope' => '*',
-        ]);
-
-        $tokenRequest = Request::create('/oauth/token', 'POST', $request->all());
-
-        $response = app()->handle($tokenRequest);
-
-        if ($response->status() !== 200) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Authentication failed.',
-            ], 401);
-        }
-
-        $data = json_decode($response->getContent(), true);
+        $expiresAt = now()->addDays(15);
+        $token = $user->createToken('login', ['*'], $expiresAt);
 
         return response()->json([
             'success' => true,
-            'token_type' => $data['token_type'],
-            'expires_in' => $data['expires_in'],
-            'access_token' => $data['access_token'],
-            'refresh_token' => $data['refresh_token'],
+            'token_type' => 'Bearer',
+            'expires_in' => $expiresAt->diffInSeconds(now()),
+            'access_token' => $token->plainTextToken,
             'user' => [
                 'id' => $user->id,
                 'username' => $user->username,
@@ -126,50 +80,47 @@ class AuthController extends Controller
     }
 
     /**
-     * Refresh OAuth2 token.
+     * Refresh token.
      *
-     * @bodyParam refresh_token string required The refresh token from login.
+     * Sends current Bearer token, receives new one.
      *
-     * @response {
-     *   "token_type": "Bearer",
-     *   "expires_in": 31536000,
-     *   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGci...",
-     *   "refresh_token": "def50200..."
-     * }
+     * @bodyParam access_token string The current access token.
      */
     public function refresh(Request $request)
     {
-        $request->validate([
-            'refresh_token' => 'required|string',
-        ]);
+        $token = $request->bearerToken();
 
-        $request->request->add([
-            'grant_type' => 'refresh_token',
-            'client_id' => $this->getClientId(),
-            'client_secret' => $this->getClientSecret(),
-            'refresh_token' => $request->refresh_token,
-            'scope' => '*',
-        ]);
+        if (!$token) {
+            $token = $request->input('access_token');
+        }
 
-        $tokenRequest = Request::create('/oauth/token', 'POST', $request->all());
-
-        $response = app()->handle($tokenRequest);
-
-        if ($response->status() !== 200) {
+        if (!$token) {
             return response()->json([
                 'success' => false,
-                'message' => 'Token refresh failed.',
+                'message' => 'Token not provided.',
             ], 401);
         }
 
-        $data = json_decode($response->getContent(), true);
+        $accessToken = PersonalAccessToken::findToken($token);
+
+        if (!$accessToken) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid token.',
+            ], 401);
+        }
+
+        $user = $accessToken->tokenable;
+        $accessToken->delete();
+
+        $expiresAt = now()->addDays(15);
+        $newToken = $user->createToken('login', ['*'], $expiresAt);
 
         return response()->json([
             'success' => true,
-            'token_type' => $data['token_type'],
-            'expires_in' => $data['expires_in'],
-            'access_token' => $data['access_token'],
-            'refresh_token' => $data['refresh_token'],
+            'token_type' => 'Bearer',
+            'expires_in' => $expiresAt->diffInSeconds(now()),
+            'access_token' => $newToken->plainTextToken,
         ]);
     }
 
@@ -177,15 +128,10 @@ class AuthController extends Controller
      * Logout (revoke token).
      *
      * @authenticated
-     *
-     * @response {
-     *   "success": true,
-     *   "message": "Successfully logged out."
-     * }
      */
     public function logout(Request $request)
     {
-        $request->user()->token()->revoke();
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
             'success' => true,
@@ -197,16 +143,6 @@ class AuthController extends Controller
      * Get authenticated user.
      *
      * @authenticated
-     *
-     * @response {
-     *   "success": true,
-     *   "data": {
-     *     "id": 1,
-     *     "username": "admin",
-     *     "email": "admin@example.com",
-     *     "full_name": "Admin User"
-     *   }
-     * }
      */
     public function user(Request $request)
     {
