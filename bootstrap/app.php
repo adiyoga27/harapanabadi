@@ -45,9 +45,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'allow_registration' => \App\Http\Middleware\AllowRegistration::class,
         ]);
 
-        $middleware->api(prepend: [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
