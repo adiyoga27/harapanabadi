@@ -252,7 +252,7 @@
 <p>Complete REST API reference for Ultimate POS. All API endpoints are prefixed with <code>/api/v1</code>.</p>
 
 <div class="alert alert-info">
-  <strong>Base URL:</strong> <code>http://localhost:8000/api/v1</code>
+  <strong>Base URL:</strong> <code><span id="base-url"></span>/api/v1</code>
 </div>
 
 <!-- OVERVIEW -->
@@ -265,6 +265,7 @@
   <tr><td>Format</td><td>JSON</td></tr>
   <tr><td>Authentication</td><td>OAuth2 (Bearer Token via Passport)</td></tr>
   <tr><td>Base Path</td><td><code>/api/v1</code></td></tr>
+  <tr><td>Host</td><td><code id="host-cell"></code></td></tr>
   <tr><td>Total Endpoints</td><td>155</td></tr>
 </table>
 
@@ -333,7 +334,7 @@ API_PASSWORD=Adiyoga1996</pre>
       <tr><td>password</td><td>string</td><td>Yes</td><td>API password (default: Adiyoga1996)</td></tr>
     </table>
     <h5>Example Request</h5>
-    <pre>curl -X POST http://localhost:8000/api/v1/login \
+    <pre>curl -X POST /api/v1/login \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"username":"admin","password":"Adiyoga1996"}'</pre>
@@ -372,7 +373,7 @@ API_PASSWORD=Adiyoga1996</pre>
       <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
       <tr><td>refresh_token</td><td>string</td><td>Yes</td><td>The refresh token from login response</td></tr>
     </table>
-    <pre>curl -X POST http://localhost:8000/api/v1/refresh \
+    <pre>curl -X POST /api/v1/refresh \
   -H "Content-Type: application/json" \
   -d '{"refresh_token":"def50200cbf895f9..."}'</pre>
   </div>
@@ -386,7 +387,7 @@ API_PASSWORD=Adiyoga1996</pre>
   </div>
   <div class="endpoint-body">
     <p>Revoke the current access token.</p>
-    <pre>curl -X POST http://localhost:8000/api/v1/logout \
+    <pre>curl -X POST /api/v1/logout \
   -H "Authorization: Bearer {token}"</pre>
   </div>
 </div>
@@ -399,7 +400,7 @@ API_PASSWORD=Adiyoga1996</pre>
   </div>
   <div class="endpoint-body">
     <p>Get authenticated user profile.</p>
-    <pre>curl -X GET http://localhost:8000/api/v1/user \
+    <pre>curl -X GET /api/v1/user \
   -H "Authorization: Bearer {token}"</pre>
     <pre>{
   "success": true,
@@ -434,7 +435,7 @@ API_PASSWORD=Adiyoga1996</pre>
       <tr><td>brand_id</td><td>integer</td><td>Filter by brand</td></tr>
       <tr><td>search</td><td>string</td><td>Search by name or SKU</td></tr>
     </table>
-    <pre>curl -X GET "http://localhost:8000/api/v1/products?per_page=10&search=coffee" \
+    <pre>curl -X GET "/api/v1/products?per_page=10&search=coffee" \
   -H "Authorization: Bearer {token}"</pre>
   </div>
 </div>
@@ -458,7 +459,7 @@ API_PASSWORD=Adiyoga1996</pre>
       <tr><td>tax</td><td>integer</td><td>No</td><td>Tax rate ID</td></tr>
       <tr><td>alert_quantity</td><td>numeric</td><td>No</td><td>Low stock alert</td></tr>
     </table>
-    <pre>curl -X POST http://localhost:8000/api/v1/products \
+    <pre>curl -X POST /api/v1/products \
   -H "Authorization: Bearer {token}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -481,7 +482,7 @@ API_PASSWORD=Adiyoga1996</pre>
   </div>
   <div class="endpoint-body">
     <p>Get product details including brand, unit, category, variations, and stock.</p>
-    <pre>curl -X GET http://localhost:8000/api/v1/products/1 \
+    <pre>curl -X GET /api/v1/products/1 \
   -H "Authorization: Bearer {token}"</pre>
   </div>
 </div>
@@ -494,7 +495,7 @@ API_PASSWORD=Adiyoga1996</pre>
   </div>
   <div class="endpoint-body">
     <p>Update an existing product.</p>
-    <pre>curl -X PUT http://localhost:8000/api/v1/products/1 \
+    <pre>curl -X PUT /api/v1/products/1 \
   -H "Authorization: Bearer {token}" \
   -H "Content-Type: application/json" \
   -d '{"name":"Updated Name","sku":"SKU002"}'</pre>
@@ -509,7 +510,7 @@ API_PASSWORD=Adiyoga1996</pre>
   </div>
   <div class="endpoint-body">
     <p>Delete a product (only if no transactions exist).</p>
-    <pre>curl -X DELETE http://localhost:8000/api/v1/products/1 \
+    <pre>curl -X DELETE /api/v1/products/1 \
   -H "Authorization: Bearer {token}"</pre>
   </div>
 </div>
@@ -535,7 +536,7 @@ API_PASSWORD=Adiyoga1996</pre>
       <tr><td>from_date</td><td>date</td><td>Start date (Y-m-d)</td></tr>
       <tr><td>to_date</td><td>date</td><td>End date (Y-m-d)</td></tr>
     </table>
-    <pre>curl -X GET "http://localhost:8000/api/v1/sells?status=final&from_date=2026-01-01&to_date=2026-12-31" \
+    <pre>curl -X GET "/api/v1/sells?status=final&from_date=2026-01-01&to_date=2026-12-31" \
   -H "Authorization: Bearer {token}"</pre>
   </div>
 </div>
@@ -562,7 +563,7 @@ API_PASSWORD=Adiyoga1996</pre>
       <tr><td>shipping_charges</td><td>numeric</td><td>No</td><td>Shipping charges</td></tr>
       <tr><td>payment</td><td>object</td><td>No</td><td>Payment details { "amount", "method" }</td></tr>
     </table>
-    <pre>curl -X POST http://localhost:8000/api/v1/sells \
+    <pre>curl -X POST /api/v1/sells \
   -H "Authorization: Bearer {token}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -593,7 +594,7 @@ API_PASSWORD=Adiyoga1996</pre>
   </div>
   <div class="endpoint-body">
     <p>Get sale details with contact, payment lines, and sell lines.</p>
-    <pre>curl -X GET http://localhost:8000/api/v1/sells/1 \
+    <pre>curl -X GET /api/v1/sells/1 \
   -H "Authorization: Bearer {token}"</pre>
   </div>
 </div>
@@ -717,7 +718,7 @@ API_PASSWORD=Adiyoga1996</pre>
   </div>
   <div class="endpoint-body">
     <p>Get profit & loss statement with sales, purchases, expenses, returns, gross & net profit.</p>
-    <pre>curl -X GET "http://localhost:8000/api/v1/reports/profit-loss?from_date=2026-06-01&to_date=2026-06-30" \
+    <pre>curl -X GET "/api/v1/reports/profit-loss?from_date=2026-06-01&to_date=2026-06-30" \
   -H "Authorization: Bearer {token}"</pre>
     <pre>{
   "success": true,
@@ -812,7 +813,7 @@ API_PASSWORD=Adiyoga1996</pre>
   </div>
   <div class="endpoint-body">
     <p>List all stock adjustments.</p>
-    <pre>curl -X GET http://localhost:8000/api/v1/stock-adjustments \
+    <pre>curl -X GET /api/v1/stock-adjustments \
   -H "Authorization: Bearer {token}"</pre>
   </div>
 </div>
@@ -1044,8 +1045,11 @@ API_PASSWORD=Adiyoga1996</pre>
 document.querySelectorAll('.endpoint-header').forEach(h => {
   h.style.cursor = 'pointer';
 });
-// Auto-open first endpoint
 document.querySelector('.endpoint-body').classList.add('open');
+
+const base = window.location.origin;
+document.getElementById('base-url').textContent = base;
+document.getElementById('host-cell').textContent = base;
 </script>
 </body>
 </html>
