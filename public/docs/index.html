@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate POS - API Documentation</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-secondary: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --text-secondary: #8b949e;
+    --primary: #58a6ff;
+    --green: #3fb950;
+    --orange: #d2991d;
+    --red: #f85149;
+    --purple: #a371f7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    line-height: 1.6;
+    display: flex;
+  }
+  #sidebar {
+    width: 280px;
+    min-width: 280px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 20px;
+  }
+  #content {
+    flex: 1;
+    padding: 40px;
+    max-width: 1000px;
+  }
+  #sidebar h2 {
+    color: var(--primary);
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  #sidebar nav a {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 6px 0;
+    font-size: 14px;
+    border-left: 2px solid transparent;
+    padding-left: 12px;
+  }
+  #sidebar nav a:hover, #sidebar nav a.active {
+    color: var(--text);
+    border-left-color: var(--primary);
+  }
+  #sidebar nav .section-title {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 13px;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  h1 { font-size: 32px; margin-bottom: 8px; }
+  h2 { font-size: 24px; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 18px; margin: 24px 0 12px; }
+  h4 { font-size: 15px; margin: 16px 0 8px; }
+  p { margin-bottom: 12px; color: var(--text-secondary); }
+  .endpoint {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 16px 0;
+    overflow: hidden;
+  }
+  .endpoint-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    cursor: pointer;
+  }
+  .method {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-right: 12px;
+    min-width: 60px;
+    text-align: center;
+  }
+  .method.get { background: #1a3a2a; color: var(--green); }
+  .method.post { background: #3a2a1a; color: var(--orange); }
+  .method.put { background: #2a1a3a; color: var(--purple); }
+  .method.patch { background: #2a1a3a; color: var(--purple); }
+  .method.delete { background: #3a1a1a; color: var(--red); }
+  .endpoint-path {
+    font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+    font-size: 14px;
+    color: var(--text);
+    flex: 1;
+  }
+  .endpoint-auth {
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .endpoint-body {
+    padding: 16px;
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .endpoint-body.open {
+    display: block;
+  }
+  .req-block, .resp-block {
+    margin-bottom: 16px;
+  }
+  .req-block h5, .resp-block h5 {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  code {
+    font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+  }
+  .alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 16px 0;
+  }
+  .alert-info {
+    background: #1a2a3a;
+    border: 1px solid #1f6feb;
+    color: var(--primary);
+  }
+  .alert-warning {
+    background: #3a321a;
+    border: 1px solid #9e6a03;
+    color: var(--orange);
+  }
+</style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <h2>Ultimate POS API</h2>
+  <nav>
+    <p class="section-title">Getting Started</p>
+    <a href="#overview">Overview</a>
+    <a href="#authentication">Authentication</a>
+    <a href="#credentials">API Credentials</a>
+    <a href="#responses">Response Format</a>
+
+    <p class="section-title">Auth Endpoints</p>
+    <a href="#auth-login">POST /login</a>
+    <a href="#auth-refresh">POST /refresh</a>
+    <a href="#auth-logout">POST /logout</a>
+    <a href="#auth-user">GET /user</a>
+
+    <p class="section-title">Dashboard</p>
+    <a href="#home-totals">GET /home/totals</a>
+    <a href="#home-stock-alert">GET /home/stock-alert</a>
+    <a href="#home-dues">GET /home/sales-dues</a>
+
+    <p class="section-title">Products</p>
+    <a href="#products-list">GET /products</a>
+    <a href="#products-create">POST /products</a>
+    <a href="#products-show">GET /products/{id}</a>
+    <a href="#products-update">PUT /products/{id}</a>
+    <a href="#products-delete">DELETE /products/{id}</a>
+
+    <p class="section-title">Sales</p>
+    <a href="#sells-list">GET /sells</a>
+    <a href="#sells-create">POST /sells</a>
+    <a href="#sells-show">GET /sells/{id}</a>
+
+    <p class="section-title">Purchases</p>
+    <a href="#purchases-list">GET /purchases</a>
+    <a href="#purchases-create">POST /purchases</a>
+
+    <p class="section-title">Contacts</p>
+    <a href="#contacts-list">GET /contacts</a>
+    <a href="#contacts-create">POST /contacts</a>
+
+    <p class="section-title">Reports</p>
+    <a href="#reports-sales">GET /reports/sales</a>
+    <a href="#reports-profit">GET /reports/profit-loss</a>
+    <a href="#reports-stock">GET /stock/current</a>
+
+    <p class="section-title">Expenses</p>
+    <a href="#expenses-list">GET /expenses</a>
+    <a href="#expenses-create">POST /expenses</a>
+
+    <p class="section-title">Stock</p>
+    <a href="#stock-current">GET /stock/current</a>
+    <a href="#stock-adjustments">GET /stock-adjustments</a>
+
+    <p class="section-title">Accounts</p>
+    <a href="#accounts-list">GET /accounts</a>
+    <a href="#accounts-balance">GET /account-balance-sheet</a>
+
+    <p class="section-title">Complete Route List</p>
+    <a href="#all-routes">All 155 Endpoints</a>
+  </nav>
+</aside>
+
+<main id="content">
+
+<h1>Ultimate POS API Documentation</h1>
+
+<p>Complete REST API reference for Ultimate POS. All API endpoints are prefixed with <code>/api/v1</code>.</p>
+
+<div class="alert alert-info">
+  <strong>Base URL:</strong> <code>http://localhost:8000/api/v1</code>
+</div>
+
+<!-- OVERVIEW -->
+<h2 id="overview">Overview</h2>
+<p>The Ultimate POS API provides programmatic access to all core POS functions including products, sales, purchases, inventory, contacts, expenses, reports, and accounts management.</p>
+
+<table>
+  <tr><th>Feature</th><th>Description</th></tr>
+  <tr><td>Protocol</td><td>HTTP/HTTPS</td></tr>
+  <tr><td>Format</td><td>JSON</td></tr>
+  <tr><td>Authentication</td><td>OAuth2 (Bearer Token via Passport)</td></tr>
+  <tr><td>Base Path</td><td><code>/api/v1</code></td></tr>
+  <tr><td>Total Endpoints</td><td>155</td></tr>
+</table>
+
+<!-- AUTHENTICATION -->
+<h2 id="authentication">Authentication</h2>
+<p>This API uses <strong>Laravel Passport</strong> for OAuth2 authentication. All protected endpoints require a <code>Bearer</code> token in the <code>Authorization</code> header.</p>
+
+<pre>Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOi...</pre>
+
+<p>To obtain a token, call the login endpoint with valid credentials. Tokens expire after 15 days. Use the refresh endpoint to get a new token.</p>
+
+<!-- CREDENTIALS -->
+<h2 id="credentials">API Credentials</h2>
+
+<table>
+  <tr><th>Parameter</th><th>Value</th><th>ENV Variable</th></tr>
+  <tr><td>Username</td><td><code>admin</code></td><td><code>API_USERNAME</code></td></tr>
+  <tr><td>Password</td><td><code>Adiyoga1996</code></td><td><code>API_PASSWORD</code></td></tr>
+</table>
+
+<div class="alert alert-warning">
+  <strong>Credentials are configurable via <code>.env</code> file:</strong>
+  <pre>API_USERNAME=admin
+API_PASSWORD=Adiyoga1996</pre>
+  Change these values and restart the application to use different credentials.
+</div>
+
+<!-- RESPONSE FORMAT -->
+<h2 id="responses">Response Format</h2>
+<p>All API responses follow a standard JSON format:</p>
+
+<h4>Success Response</h4>
+<pre>{
+  "success": true,
+  "data": { ... },
+  "meta": {
+    "current_page": 1,
+    "last_page": 5,
+    "per_page": 20,
+    "total": 100
+  }
+}</pre>
+
+<h4>Error Response</h4>
+<pre>{
+  "success": false,
+  "message": "Error description"
+}</pre>
+
+<hr>
+
+<!-- AUTH ENDPOINTS -->
+<h2 id="auth-login">Auth Endpoints</h2>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method post">POST</span>
+    <span class="endpoint-path">/api/v1/login</span>
+    <span class="endpoint-auth">Public</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Authenticate and receive an OAuth2 access token.</p>
+    <table>
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>username</td><td>string</td><td>Yes</td><td>API username (default: admin)</td></tr>
+      <tr><td>password</td><td>string</td><td>Yes</td><td>API password (default: Adiyoga1996)</td></tr>
+    </table>
+    <h5>Example Request</h5>
+    <pre>curl -X POST http://localhost:8000/api/v1/login \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"username":"admin","password":"Adiyoga1996"}'</pre>
+    <h5>Example Response (200)</h5>
+    <pre>{
+  "success": true,
+  "token_type": "Bearer",
+  "expires_in": 1296000,
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciO...",
+  "refresh_token": "def50200cbf895f9...",
+  "user": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com",
+    "full_name": "Admin User",
+    "business_id": 1
+  }
+}</pre>
+    <h5>Error Response (401)</h5>
+    <pre>{
+  "success": false,
+  "message": "Invalid credentials."
+}</pre>
+  </div>
+</div>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method post">POST</span>
+    <span class="endpoint-path">/api/v1/refresh</span>
+    <span class="endpoint-auth">Public</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Refresh an expired access token.</p>
+    <table>
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>refresh_token</td><td>string</td><td>Yes</td><td>The refresh token from login response</td></tr>
+    </table>
+    <pre>curl -X POST http://localhost:8000/api/v1/refresh \
+  -H "Content-Type: application/json" \
+  -d '{"refresh_token":"def50200cbf895f9..."}'</pre>
+  </div>
+</div>
+
+<div class="endpoint" id="auth-logout">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method post">POST</span>
+    <span class="endpoint-path">/api/v1/logout</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Revoke the current access token.</p>
+    <pre>curl -X POST http://localhost:8000/api/v1/logout \
+  -H "Authorization: Bearer {token}"</pre>
+  </div>
+</div>
+
+<div class="endpoint" id="auth-user">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/user</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Get authenticated user profile.</p>
+    <pre>curl -X GET http://localhost:8000/api/v1/user \
+  -H "Authorization: Bearer {token}"</pre>
+    <pre>{
+  "success": true,
+  "data": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com",
+    "full_name": "Admin User",
+    "business_id": 1
+  }
+}</pre>
+  </div>
+</div>
+
+<hr>
+
+<!-- PRODUCTS -->
+<h2 id="products-list">Products</h2>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/products</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>List all products with pagination.</p>
+    <table>
+      <tr><th>Query Parameter</th><th>Type</th><th>Description</th></tr>
+      <tr><td>per_page</td><td>integer</td><td>Items per page (default: 20)</td></tr>
+      <tr><td>category_id</td><td>integer</td><td>Filter by category</td></tr>
+      <tr><td>brand_id</td><td>integer</td><td>Filter by brand</td></tr>
+      <tr><td>search</td><td>string</td><td>Search by name or SKU</td></tr>
+    </table>
+    <pre>curl -X GET "http://localhost:8000/api/v1/products?per_page=10&search=coffee" \
+  -H "Authorization: Bearer {token}"</pre>
+  </div>
+</div>
+
+<div class="endpoint" id="products-create">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method post">POST</span>
+    <span class="endpoint-path">/api/v1/products</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Create a new product.</p>
+    <table>
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>name</td><td>string</td><td>Yes</td><td>Product name</td></tr>
+      <tr><td>sku</td><td>string</td><td>Yes</td><td>Product SKU code</td></tr>
+      <tr><td>unit_id</td><td>integer</td><td>Yes</td><td>Unit of measurement ID</td></tr>
+      <tr><td>type</td><td>string</td><td>Yes</td><td>single or variable</td></tr>
+      <tr><td>category_id</td><td>integer</td><td>No</td><td>Category ID</td></tr>
+      <tr><td>brand_id</td><td>integer</td><td>No</td><td>Brand ID</td></tr>
+      <tr><td>tax</td><td>integer</td><td>No</td><td>Tax rate ID</td></tr>
+      <tr><td>alert_quantity</td><td>numeric</td><td>No</td><td>Low stock alert</td></tr>
+    </table>
+    <pre>curl -X POST http://localhost:8000/api/v1/products \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "New Product",
+    "sku": "SKU001",
+    "unit_id": 1,
+    "type": "single",
+    "category_id": 1,
+    "brand_id": 1,
+    "alert_quantity": 10
+  }'</pre>
+  </div>
+</div>
+
+<div class="endpoint" id="products-show">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/products/{id}</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Get product details including brand, unit, category, variations, and stock.</p>
+    <pre>curl -X GET http://localhost:8000/api/v1/products/1 \
+  -H "Authorization: Bearer {token}"</pre>
+  </div>
+</div>
+
+<div class="endpoint" id="products-update">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method put">PUT</span>
+    <span class="endpoint-path">/api/v1/products/{id}</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Update an existing product.</p>
+    <pre>curl -X PUT http://localhost:8000/api/v1/products/1 \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Updated Name","sku":"SKU002"}'</pre>
+  </div>
+</div>
+
+<div class="endpoint" id="products-delete">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method delete">DELETE</span>
+    <span class="endpoint-path">/api/v1/products/{id}</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Delete a product (only if no transactions exist).</p>
+    <pre>curl -X DELETE http://localhost:8000/api/v1/products/1 \
+  -H "Authorization: Bearer {token}"</pre>
+  </div>
+</div>
+
+<hr>
+
+<!-- SALES -->
+<h2 id="sells-list">Sales</h2>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/sells</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>List all sales transactions with pagination.</p>
+    <table>
+      <tr><th>Query Parameter</th><th>Type</th><th>Description</th></tr>
+      <tr><td>per_page</td><td>integer</td><td>Items per page (default: 20)</td></tr>
+      <tr><td>status</td><td>string</td><td>draft, final, quotation</td></tr>
+      <tr><td>contact_id</td><td>integer</td><td>Filter by customer</td></tr>
+      <tr><td>from_date</td><td>date</td><td>Start date (Y-m-d)</td></tr>
+      <tr><td>to_date</td><td>date</td><td>End date (Y-m-d)</td></tr>
+    </table>
+    <pre>curl -X GET "http://localhost:8000/api/v1/sells?status=final&from_date=2026-01-01&to_date=2026-12-31" \
+  -H "Authorization: Bearer {token}"</pre>
+  </div>
+</div>
+
+<div class="endpoint" id="sells-create">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method post">POST</span>
+    <span class="endpoint-path">/api/v1/sells</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Create a new sale transaction.</p>
+    <table>
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>contact_id</td><td>integer</td><td>Yes</td><td>Customer ID</td></tr>
+      <tr><td>transaction_date</td><td>date</td><td>Yes</td><td>Transaction date</td></tr>
+      <tr><td>location_id</td><td>integer</td><td>Yes</td><td>Business location ID</td></tr>
+      <tr><td>products</td><td>array</td><td>Yes</td><td>Array of product objects</td></tr>
+      <tr><td>products.*.variation_id</td><td>integer</td><td>Yes</td><td>Variation ID</td></tr>
+      <tr><td>products.*.quantity</td><td>numeric</td><td>Yes</td><td>Quantity</td></tr>
+      <tr><td>products.*.unit_price</td><td>numeric</td><td>Yes</td><td>Unit selling price</td></tr>
+      <tr><td>status</td><td>string</td><td>No</td><td>draft or final (default: final)</td></tr>
+      <tr><td>discount_amount</td><td>numeric</td><td>No</td><td>Total discount</td></tr>
+      <tr><td>shipping_charges</td><td>numeric</td><td>No</td><td>Shipping charges</td></tr>
+      <tr><td>payment</td><td>object</td><td>No</td><td>Payment details { "amount", "method" }</td></tr>
+    </table>
+    <pre>curl -X POST http://localhost:8000/api/v1/sells \
+  -H "Authorization: Bearer {token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contact_id": 1,
+    "transaction_date": "2026-06-17",
+    "location_id": 1,
+    "products": [
+      {
+        "variation_id": 1,
+        "quantity": 2,
+        "unit_price": 50000
+      }
+    ],
+    "status": "final",
+    "payment": {
+      "amount": 100000,
+      "method": "cash"
+    }
+  }'</pre>
+  </div>
+</div>
+
+<div class="endpoint" id="sells-show">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/sells/{id}</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Get sale details with contact, payment lines, and sell lines.</p>
+    <pre>curl -X GET http://localhost:8000/api/v1/sells/1 \
+  -H "Authorization: Bearer {token}"</pre>
+  </div>
+</div>
+
+<hr>
+
+<!-- PURCHASES -->
+<h2 id="purchases-list">Purchases</h2>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/purchases</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>List all purchase transactions with pagination.</p>
+    <table>
+      <tr><th>Query Parameter</th><th>Type</th><th>Description</th></tr>
+      <tr><td>per_page</td><td>integer</td><td>Items per page</td></tr>
+      <tr><td>status</td><td>string</td><td>received, pending, ordered</td></tr>
+      <tr><td>contact_id</td><td>integer</td><td>Filter by supplier</td></tr>
+      <tr><td>from_date</td><td>date</td><td>Start date</td></tr>
+      <tr><td>to_date</td><td>date</td><td>End date</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="endpoint" id="purchases-create">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method post">POST</span>
+    <span class="endpoint-path">/api/v1/purchases</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Create a new purchase transaction.</p>
+    <table>
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>contact_id</td><td>integer</td><td>Yes</td><td>Supplier ID</td></tr>
+      <tr><td>transaction_date</td><td>date</td><td>Yes</td><td>Transaction date</td></tr>
+      <tr><td>location_id</td><td>integer</td><td>Yes</td><td>Business location ID</td></tr>
+      <tr><td>products</td><td>array</td><td>Yes</td><td>Array of product objects</td></tr>
+      <tr><td>products.*.variation_id</td><td>integer</td><td>Yes</td><td>Variation ID</td></tr>
+      <tr><td>products.*.quantity</td><td>numeric</td><td>Yes</td><td>Quantity</td></tr>
+      <tr><td>products.*.purchase_price</td><td>numeric</td><td>Yes</td><td>Unit purchase price</td></tr>
+      <tr><td>status</td><td>string</td><td>No</td><td>received, pending (default: received)</td></tr>
+    </table>
+  </div>
+</div>
+
+<hr>
+
+<!-- CONTACTS -->
+<h2 id="contacts-list">Contacts</h2>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/contacts</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>List all contacts (customers/suppliers).</p>
+    <table>
+      <tr><th>Query Parameter</th><th>Type</th><th>Description</th></tr>
+      <tr><td>per_page</td><td>integer</td><td>Items per page</td></tr>
+      <tr><td>type</td><td>string</td><td>customer, supplier, or both</td></tr>
+      <tr><td>search</td><td>string</td><td>Search by name, mobile, or email</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="endpoint" id="contacts-create">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method post">POST</span>
+    <span class="endpoint-path">/api/v1/contacts</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Create a new contact.</p>
+    <table>
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>name</td><td>string</td><td>Yes</td><td>Contact name</td></tr>
+      <tr><td>type</td><td>string</td><td>Yes</td><td>customer, supplier, or both</td></tr>
+      <tr><td>email</td><td>string</td><td>No</td><td>Email address</td></tr>
+      <tr><td>mobile</td><td>string</td><td>No</td><td>Phone number</td></tr>
+      <tr><td>city</td><td>string</td><td>No</td><td>City</td></tr>
+      <tr><td>credit_limit</td><td>numeric</td><td>No</td><td>Credit limit amount</td></tr>
+    </table>
+  </div>
+</div>
+
+<hr>
+
+<!-- REPORTS -->
+<h2 id="reports-sales">Reports</h2>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/reports/sales</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Get sales report with summary totals.</p>
+    <table>
+      <tr><th>Query Parameter</th><th>Type</th><th>Description</th></tr>
+      <tr><td>from_date</td><td>date</td><td>Start date (Y-m-d)</td></tr>
+      <tr><td>to_date</td><td>date</td><td>End date (Y-m-d)</td></tr>
+      <tr><td>contact_id</td><td>integer</td><td>Filter by customer</td></tr>
+      <tr><td>location_id</td><td>integer</td><td>Filter by location</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="endpoint" id="reports-profit">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/reports/profit-loss</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Get profit & loss statement with sales, purchases, expenses, returns, gross & net profit.</p>
+    <pre>curl -X GET "http://localhost:8000/api/v1/reports/profit-loss?from_date=2026-06-01&to_date=2026-06-30" \
+  -H "Authorization: Bearer {token}"</pre>
+    <pre>{
+  "success": true,
+  "data": {
+    "sales": 5000000,
+    "sell_returns": 100000,
+    "purchases": 3000000,
+    "purchase_returns": 50000,
+    "expenses": 500000,
+    "gross_profit": 1950000,
+    "net_profit": 1450000,
+    "from_date": "2026-06-01",
+    "to_date": "2026-06-30"
+  }
+}</pre>
+  </div>
+</div>
+
+<div class="endpoint" id="reports-stock">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/stock/current</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Get current stock levels for all products.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- EXPENSES -->
+<h2 id="expenses-list">Expenses</h2>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/expenses</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>List all expenses with pagination.</p>
+    <table>
+      <tr><th>Query Parameter</th><th>Type</th><th>Description</th></tr>
+      <tr><td>per_page</td><td>integer</td><td>Items per page</td></tr>
+      <tr><td>expense_category_id</td><td>integer</td><td>Filter by category</td></tr>
+      <tr><td>from_date</td><td>date</td><td>Start date</td></tr>
+      <tr><td>to_date</td><td>date</td><td>End date</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="endpoint" id="expenses-create">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method post">POST</span>
+    <span class="endpoint-path">/api/v1/expenses</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Create a new expense.</p>
+    <table>
+      <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>expense_category_id</td><td>integer</td><td>Yes</td><td>Expense category ID</td></tr>
+      <tr><td>transaction_date</td><td>date</td><td>Yes</td><td>Transaction date</td></tr>
+      <tr><td>final_total</td><td>numeric</td><td>Yes</td><td>Expense amount</td></tr>
+      <tr><td>location_id</td><td>integer</td><td>Yes</td><td>Business location ID</td></tr>
+    </table>
+  </div>
+</div>
+
+<hr>
+
+<!-- STOCK -->
+<h2 id="stock-current">Stock</h2>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/stock/current</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Get current stock levels with product details and quantities.</p>
+  </div>
+</div>
+
+<div class="endpoint" id="stock-adjustments">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/stock-adjustments</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>List all stock adjustments.</p>
+    <pre>curl -X GET http://localhost:8000/api/v1/stock-adjustments \
+  -H "Authorization: Bearer {token}"</pre>
+  </div>
+</div>
+
+<hr>
+
+<!-- ACCOUNTS -->
+<h2 id="accounts-list">Accounts</h2>
+
+<div class="endpoint">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/accounts</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>List all accounts with their types.</p>
+  </div>
+</div>
+
+<div class="endpoint" id="accounts-balance">
+  <div class="endpoint-header" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span class="method get">GET</span>
+    <span class="endpoint-path">/api/v1/account-balance-sheet</span>
+    <span class="endpoint-auth">Bearer Token</span>
+  </div>
+  <div class="endpoint-body">
+    <p>Get balance sheet report with total debits and credits per account.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- ALL ROUTES -->
+<h2 id="all-routes">Complete Route List (155 Endpoints)</h2>
+<p>All endpoints require <code>Authorization: Bearer {token}</code> header unless marked <strong>Public</strong>.</p>
+
+<table>
+  <tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Authentication</strong></td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/login</code></td><td>Public</td><td>Login & get access token</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/refresh</code></td><td>Public</td><td>Refresh access token</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/logout</code></td><td>Bearer</td><td>Revoke current token</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/user</code></td><td>Bearer</td><td>Get authenticated user</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Dashboard</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/home/totals</code></td><td>Bearer</td><td>Dashboard sales/purchase/expense totals</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/home/stock-alert</code></td><td>Bearer</td><td>Low stock alerts</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/home/purchase-dues</code></td><td>Bearer</td><td>Unpaid purchase dues</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/home/sales-dues</code></td><td>Bearer</td><td>Unpaid sales dues</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/home/calendar</code></td><td>Bearer</td><td>Calendar events (sales/purchases)</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/home/notifications</code></td><td>Bearer</td><td>User notifications</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Business Settings</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/business/settings</code></td><td>Bearer</td><td>Get business settings</td></tr>
+  <tr><td><span class="method put">PUT</span></td><td><code>/business/settings</code></td><td>Bearer</td><td>Update business settings</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/business/locations</code></td><td>Bearer</td><td>List business locations</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/business/locations/{id}</code></td><td>Bearer</td><td>Get location details</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/business/test-email</code></td><td>Bearer</td><td>Test email configuration</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/business/test-sms</code></td><td>Bearer</td><td>Test SMS configuration</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Products</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/products</code></td><td>Bearer</td><td>List products (paginated)</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/products</code></td><td>Bearer</td><td>Create product</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/products/{id}</code></td><td>Bearer</td><td>Get product detail</td></tr>
+  <tr><td><span class="method put">PUT</span></td><td><code>/products/{id}</code></td><td>Bearer</td><td>Update product</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/products/{id}</code></td><td>Bearer</td><td>Delete product</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/products/{id}/stock-history</code></td><td>Bearer</td><td>Product stock history</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/products/{id}/variations</code></td><td>Bearer</td><td>Product variations</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/products/{id}/group-price</code></td><td>Bearer</td><td>View selling group prices</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/products/{id}/activate</code></td><td>Bearer</td><td>Activate product</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/products/mass-deactivate</code></td><td>Bearer</td><td>Mass deactivate products</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/products/mass-delete</code></td><td>Bearer</td><td>Mass delete products</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/products-list</code></td><td>Bearer</td><td>All active products (for dropdowns)</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Categories</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/categories</code></td><td>Bearer</td><td>List categories</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/categories</code></td><td>Bearer</td><td>Create category</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/categories/{id}</code></td><td>Bearer</td><td>Get category</td></tr>
+  <tr><td><span class="method put">PUT</span></td><td><code>/categories/{id}</code></td><td>Bearer</td><td>Update category</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/categories/{id}</code></td><td>Bearer</td><td>Delete category</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/categories/{id}/sub-categories</code></td><td>Bearer</td><td>Get sub-categories</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Brands</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/brands</code></td><td>Bearer</td><td>List brands</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/brands</code></td><td>Bearer</td><td>Create brand</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/brands/{id}</code></td><td>Bearer</td><td>Get brand</td></tr>
+  <tr><td><span class="method put">PUT</span></td><td><code>/brands/{id}</code></td><td>Bearer</td><td>Update brand</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/brands/{id}</code></td><td>Bearer</td><td>Delete brand</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Sales / Sell</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sells</code></td><td>Bearer</td><td>List sales (paginated)</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/sells</code></td><td>Bearer</td><td>Create sale</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sells/{id}</code></td><td>Bearer</td><td>Get sale detail</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/sells/{id}</code></td><td>Bearer</td><td>Delete sale</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sells/{id}/payments</code></td><td>Bearer</td><td>Get sale payments</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/sells/{id}/add-payment</code></td><td>Bearer</td><td>Add payment to sale</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sells/{id}/print</code></td><td>Bearer</td><td>Get invoice print data</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sells/drafts</code></td><td>Bearer</td><td>List draft sales</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sells/quotations</code></td><td>Bearer</td><td>List quotations</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/sells/{id}/convert-to-invoice</code></td><td>Bearer</td><td>Convert quotation to invoice</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/sells/{id}/convert-to-proforma</code></td><td>Bearer</td><td>Convert to proforma</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sells/{id}/duplicate</code></td><td>Bearer</td><td>Duplicate sale</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sell-returns</code></td><td>Bearer</td><td>List sell returns</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/sell-returns</code></td><td>Bearer</td><td>Create sell return</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sell-returns/{id}</code></td><td>Bearer</td><td>Get sell return detail</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>POS Operations</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/pos/product-row/{variation_id}/{location_id}</code></td><td>Bearer</td><td>Get product row for POS</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/pos/payment-row</code></td><td>Bearer</td><td>Get payment row data</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/pos/recent-transactions</code></td><td>Bearer</td><td>Recent POS transactions</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/pos/product-suggestion</code></td><td>Bearer</td><td>Product suggestions</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/pos/featured-products/{location_id}</code></td><td>Bearer</td><td>Featured products</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Purchases</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/purchases</code></td><td>Bearer</td><td>List purchases (paginated)</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/purchases</code></td><td>Bearer</td><td>Create purchase</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/purchases/{id}</code></td><td>Bearer</td><td>Get purchase detail</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/purchases/{id}</code></td><td>Bearer</td><td>Delete purchase</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/purchases/{id}/payments</code></td><td>Bearer</td><td>Get purchase payments</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/purchases/{id}/add-payment</code></td><td>Bearer</td><td>Add payment to purchase</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/purchases/update-status</code></td><td>Bearer</td><td>Bulk update purchase status</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/purchases/{id}/print</code></td><td>Bearer</td><td>Get purchase print data</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/purchase-returns</code></td><td>Bearer</td><td>List purchase returns</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/purchase-returns</code></td><td>Bearer</td><td>Create purchase return</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/purchase-returns/{id}</code></td><td>Bearer</td><td>Get purchase return</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Purchase Orders</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/purchase-orders</code></td><td>Bearer</td><td>List purchase orders</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/purchase-orders</code></td><td>Bearer</td><td>Create purchase order</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/purchase-orders/{id}</code></td><td>Bearer</td><td>Get purchase order</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/purchase-orders/{id}</code></td><td>Bearer</td><td>Delete purchase order</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Sales Orders</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sales-orders</code></td><td>Bearer</td><td>List sales orders</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/sales-orders</code></td><td>Bearer</td><td>Create sales order</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/sales-orders/{id}</code></td><td>Bearer</td><td>Get sales order</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/sales-orders/{id}</code></td><td>Bearer</td><td>Delete sales order</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Contacts</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/contacts</code></td><td>Bearer</td><td>List contacts</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/contacts</code></td><td>Bearer</td><td>Create contact</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/contacts/{id}</code></td><td>Bearer</td><td>Get contact</td></tr>
+  <tr><td><span class="method put">PUT</span></td><td><code>/contacts/{id}</code></td><td>Bearer</td><td>Update contact</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/contacts/{id}</code></td><td>Bearer</td><td>Delete contact</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/contacts/{id}/payments</code></td><td>Bearer</td><td>Get contact payments</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/contacts/{id}/ledger</code></td><td>Bearer</td><td>Get contact ledger</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/contacts/{id}/send-ledger</code></td><td>Bearer</td><td>Send ledger</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/contacts/import</code></td><td>Bearer</td><td>Import contacts</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/customers</code></td><td>Bearer</td><td>List customers</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/suppliers</code></td><td>Bearer</td><td>List suppliers</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/customer-groups</code></td><td>Bearer</td><td>List customer groups</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Expenses</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/expenses</code></td><td>Bearer</td><td>List expenses</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/expenses</code></td><td>Bearer</td><td>Create expense</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/expenses/{id}</code></td><td>Bearer</td><td>Get expense</td></tr>
+  <tr><td><span class="method put">PUT</span></td><td><code>/expenses/{id}</code></td><td>Bearer</td><td>Update expense</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/expenses/{id}</code></td><td>Bearer</td><td>Delete expense</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/expense-categories</code></td><td>Bearer</td><td>List expense categories</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Payments</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/payments</code></td><td>Bearer</td><td>List all payments</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/payments/{id}</code></td><td>Bearer</td><td>Get payment detail</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/payments/contact-due/{contact_id}</code></td><td>Bearer</td><td>Get contact dues</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/payments/pay-contact-due</code></td><td>Bearer</td><td>Pay contact due</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Reports</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/sales</code></td><td>Bearer</td><td>Sales report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/purchases</code></td><td>Bearer</td><td>Purchase report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/profit-loss</code></td><td>Bearer</td><td>Profit & loss statement</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/trending-products</code></td><td>Bearer</td><td>Trending products</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/tax</code></td><td>Bearer</td><td>Tax report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/expense</code></td><td>Bearer</td><td>Expense report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/register</code></td><td>Bearer</td><td>Cash register report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/customer-group</code></td><td>Bearer</td><td>Customer group report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/sell-payment</code></td><td>Bearer</td><td>Sell payment report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/purchase-payment</code></td><td>Bearer</td><td>Purchase payment report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/product-sell</code></td><td>Bearer</td><td>Product sell report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/product-purchase</code></td><td>Bearer</td><td>Product purchase report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/reports/activity-log</code></td><td>Bearer</td><td>Activity log</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Stock</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/stock/current</code></td><td>Bearer</td><td>Current stock levels</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/stock/details</code></td><td>Bearer</td><td>Stock details</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/stock/expiry</code></td><td>Bearer</td><td>Stock expiry report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/stock/value</code></td><td>Bearer</td><td>Stock value report</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/stock-transfers</code></td><td>Bearer</td><td>Stock transfers</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/stock-adjustments</code></td><td>Bearer</td><td>List stock adjustments</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/stock-adjustments</code></td><td>Bearer</td><td>Create stock adjustment</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/stock-adjustments/{id}</code></td><td>Bearer</td><td>Get stock adjustment</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/stock-adjustments/{id}</code></td><td>Bearer</td><td>Delete stock adjustment</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/opening-stock</code></td><td>Bearer</td><td>List opening stock</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/opening-stock</code></td><td>Bearer</td><td>Create opening stock</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/opening-stock/{id}</code></td><td>Bearer</td><td>Get opening stock</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/opening-stock/{id}</code></td><td>Bearer</td><td>Delete opening stock</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Accounts</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/accounts</code></td><td>Bearer</td><td>List accounts</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/accounts</code></td><td>Bearer</td><td>Create account</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/accounts/{id}</code></td><td>Bearer</td><td>Get account</td></tr>
+  <tr><td><span class="method put">PUT</span></td><td><code>/accounts/{id}</code></td><td>Bearer</td><td>Update account</td></tr>
+  <tr><td><span class="method delete">DELETE</span></td><td><code>/accounts/{id}</code></td><td>Bearer</td><td>Delete account</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/account-balance-sheet</code></td><td>Bearer</td><td>Balance sheet</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/account-trial-balance</code></td><td>Bearer</td><td>Trial balance</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/account-cash-flow</code></td><td>Bearer</td><td>Cash flow statement</td></tr>
+
+  <tr style="background:var(--bg-secondary)"><td colspan="4"><strong>Other</strong></td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/units</code></td><td>Bearer</td><td>List units</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/tax-rates</code></td><td>Bearer</td><td>List tax rates</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/variation-templates</code></td><td>Bearer</td><td>List variation templates</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/barcodes</code></td><td>Bearer</td><td>List barcode settings</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/selling-price-groups</code></td><td>Bearer</td><td>List selling price groups</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/warranties</code></td><td>Bearer</td><td>List warranties</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/discounts</code></td><td>Bearer</td><td>List discounts</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/invoice-schemes</code></td><td>Bearer</td><td>List invoice schemes</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/types-of-service</code></td><td>Bearer</td><td>List types of service</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/cash-register</code></td><td>Bearer</td><td>Get open cash register</td></tr>
+  <tr><td><span class="method post">POST</span></td><td><code>/cash-register/close</code></td><td>Bearer</td><td>Close cash register</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/users-list</code></td><td>Bearer</td><td>List users</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/roles</code></td><td>Bearer</td><td>List roles</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/tables</code></td><td>Bearer</td><td>List restaurant tables</td></tr>
+  <tr><td><span class="method get">GET</span></td><td><code>/labels/preview</code></td><td>Bearer</td><td>Get label preview</td></tr>
+</table>
+</main>
+
+<script>
+document.querySelectorAll('.endpoint-header').forEach(h => {
+  h.style.cursor = 'pointer';
+});
+// Auto-open first endpoint
+document.querySelector('.endpoint-body').classList.add('open');
+</script>
+</body>
+</html>
