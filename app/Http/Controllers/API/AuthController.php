@@ -15,8 +15,24 @@ use Illuminate\Support\Facades\Hash;
  */
 class AuthController extends Controller
 {
-    private $clientId = 1;
-    private $clientSecret = 'wEJ2u9vAycxICEdv6k1PkmGNpOzYW60scrhds22v';
+    private $clientId;
+    private $clientSecret;
+
+    public function __construct()
+    {
+        $this->clientId = env('OAUTH_CLIENT_ID', 1);
+        $this->clientSecret = env('OAUTH_CLIENT_SECRET', 'wEJ2u9vAycxICEdv6k1PkmGNpOzYW60scrhds22v');
+    }
+
+    private function getClientId()
+    {
+        return $this->clientId ?: 1;
+    }
+
+    private function getClientSecret()
+    {
+        return $this->clientSecret ?: 'wEJ2u9vAycxICEdv6k1PkmGNpOzYW60scrhds22v';
+    }
 
     /**
      * Login to get OAuth2 token.
@@ -73,8 +89,8 @@ class AuthController extends Controller
 
         $request->request->add([
             'grant_type' => 'password',
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
+            'client_id' => $this->getClientId(),
+            'client_secret' => $this->getClientSecret(),
             'username' => $request->username,
             'password' => $request->password,
             'scope' => '*',
@@ -129,8 +145,8 @@ class AuthController extends Controller
 
         $request->request->add([
             'grant_type' => 'refresh_token',
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
+            'client_id' => $this->getClientId(),
+            'client_secret' => $this->getClientSecret(),
             'refresh_token' => $request->refresh_token,
             'scope' => '*',
         ]);
