@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('oauth_clients', function (Blueprint $table) {
-            $table->string('provider')->nullable()->after('secret');
+            if (!Schema::hasColumn('oauth_clients', 'provider')) {
+                $table->string('provider')->nullable()->after('secret');
+            }
         });
     }
 
