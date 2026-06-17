@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Sitemap:https://www.pospintar.my.id/sitemap.xml
+Sitemap:https://www.pospintar.my.id/sitemap-1.xml
+Sitemap:https://www.pospintar.my.id/sitemap-2.xml
+Sitemap:https://www.pospintar.my.id/sitemap-3.xml
+Sitemap:https://www.pospintar.my.id/sitemap-4.xml
+Sitemap:https://www.pospintar.my.id/sitemap-5.xml
+Sitemap:https://www.pospintar.my.id/sitemap-6.xml
+Sitemap:https://www.pospintar.my.id/sitemap-7.xml
+Sitemap:https://www.pospintar.my.id/sitemap-8.xml
+Sitemap:https://www.pospintar.my.id/sitemap-9.xml
+Sitemap:https://www.pospintar.my.id/sitemap-10.xml
+Sitemap:https://www.pospintar.my.id/sitemap-11.xml
+Sitemap:https://www.pospintar.my.id/sitemap-12.xml
+Sitemap:https://www.pospintar.my.id/sitemap-13.xml
+Sitemap:https://www.pospintar.my.id/sitemap-14.xml
+Sitemap:https://www.pospintar.my.id/sitemap-15.xml
+Sitemap:https://www.pospintar.my.id/sitemap-16.xml
