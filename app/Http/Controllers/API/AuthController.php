@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     private $clientId = 1;
-    private $clientSecret = 'yKvU8jG3xM7pB5wR2nD4fH6qT1sV9aC0';
+    private $clientSecret = 'wEJ2u9vAycxICEdv6k1PkmGNpOzYW60scrhds22v';
 
     /**
      * Login to get OAuth2 token.
