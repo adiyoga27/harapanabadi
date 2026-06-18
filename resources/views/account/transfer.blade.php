@@ -65,5 +65,13 @@
     $('#od_datetimepicker').datetimepicker({
       format: moment_date_format + ' ' + moment_time_format
     });
+
+    $('#fund_transfer_form').on('submit', function() {
+        var submit_btn = $(this).find('button[type="submit"]');
+        if (submit_btn.attr('disabled')) {
+            return false;
+        }
+        submit_btn.attr('disabled', true);
+    });
   });
 </script>

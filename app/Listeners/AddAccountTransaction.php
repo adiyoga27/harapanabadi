@@ -45,6 +45,12 @@ class AddAccountTransaction
 
         // //Create new account transaction
         if (!empty($event->formInput['account_id']) && $event->transactionPayment->method != 'advance') {
+            //Prevent duplicate account transaction for the same payment
+            $existing = AccountTransaction::where('transaction_payment_id', $event->transactionPayment->id)->first();
+            if ($existing) {
+                return true;
+            }
+
             $account_transaction_data = [
                 'amount' => $event->formInput['amount'],
                 'account_id' => $event->formInput['account_id'],

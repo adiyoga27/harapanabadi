@@ -616,6 +616,8 @@ class AccountController extends Controller
                             ->findOrFail($account_id);
 
             if (!empty($amount)) {
+                DB::beginTransaction();
+
                 $credit_data = [
                     'amount' => $amount,
                     'account_id' => $account_id,
@@ -640,6 +642,8 @@ class AccountController extends Controller
 
                     $credit->save();
                 }
+
+                DB::commit();
             }
             
             $output = ['success' => true,

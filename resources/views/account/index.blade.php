@@ -314,11 +314,17 @@
 
     $(document).on('submit', 'form#deposit_form', function(e){
         e.preventDefault();
-        var data = $(this).serialize();
+        var form = $(this);
+        var submit_btn = form.find('button[type="submit"]');
+        if (submit_btn.attr('disabled')) {
+            return false;
+        }
+        submit_btn.attr('disabled', true);
+        var data = form.serialize();
 
         $.ajax({
           method: "POST",
-          url: $(this).attr("action"),
+          url: form.attr("action"),
           dataType: "json",
           data: data,
           success: function(result){
@@ -330,6 +336,9 @@
             } else {
               toastr.error(result.msg);
             }
+          },
+          complete: function() {
+              submit_btn.attr('disabled', false);
           }
         });
     });
