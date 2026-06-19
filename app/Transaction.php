@@ -284,7 +284,7 @@ class Transaction extends Model
 
         if (in_array($payment_status, ['partial', 'due']) && !empty($transaction->pay_term_number) && !empty($transaction->pay_term_type)) {
             $transaction_date = \Carbon::parse($transaction->transaction_date);
-            $due_date = $transaction->pay_term_type == 'days' ? $transaction_date->addDays($transaction->pay_term_number) : $transaction_date->addMonths($transaction->pay_term_number);
+            $due_date = $transaction->pay_term_type == 'days' ? $transaction_date->addDays((int) $transaction->pay_term_number) : $transaction_date->addMonths((int) $transaction->pay_term_number);
             $now = \Carbon::now();
             if ($now->gt($due_date)) {
                 $payment_status = $payment_status == 'due' ? 'overdue' : 'partial-overdue';
@@ -301,7 +301,7 @@ class Transaction extends Model
     {
         $transaction_date = \Carbon::parse($this->transaction_date);
         if (!empty($this->pay_term_type) && !empty($this->pay_term_number)) {
-            $due_date = $this->pay_term_type == 'days' ? $transaction_date->addDays($this->pay_term_number) : $transaction_date->addMonths($this->pay_term_number);
+            $due_date = $this->pay_term_type == 'days' ? $transaction_date->addDays((int) $this->pay_term_number) : $transaction_date->addMonths((int) $this->pay_term_number);
         } else {
             $due_date = $transaction_date->addDays(0);
         }

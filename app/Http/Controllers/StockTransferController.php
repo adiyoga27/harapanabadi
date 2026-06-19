@@ -98,7 +98,7 @@ class StockTransferController extends Controller
                     $html .= ' <a href="#" class="print-invoice btn btn-info btn-xs" data-href="' . action('StockTransferController@printInvoice', [$row->id]) . '"><i class="fa fa-print" aria-hidden="true"></i> '. __("messages.print") .'</a>';
 
                     $date = \Carbon::parse($row->transaction_date)
-                        ->addDays($edit_days);
+                        ->addDays((int) $edit_days);
                     $today = today();
 
                     if ($date->gte($today)) {

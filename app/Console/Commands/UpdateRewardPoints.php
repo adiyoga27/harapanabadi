@@ -63,9 +63,9 @@ class UpdateRewardPoints extends Command
 
                 $transaction_date_to_be_expired = \Carbon::now();
                 if ($business->rp_expiry_type == 'month') {
-                    $transaction_date_to_be_expired = $transaction_date_to_be_expired->subMonths($business->rp_expiry_period);
+                    $transaction_date_to_be_expired = $transaction_date_to_be_expired->subMonths((int) $business->rp_expiry_period);
                 } elseif ($business->rp_expiry_type == 'year') {
-                    $transaction_date_to_be_expired = $transaction_date_to_be_expired->subYears($business->rp_expiry_period);
+                    $transaction_date_to_be_expired = $transaction_date_to_be_expired->subYears((int) $business->rp_expiry_period);
                 }
 
                 $transactions = Transaction::where('business_id', $business->id)

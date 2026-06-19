@@ -42,11 +42,11 @@ class Warranty extends Model
         $date_obj = \Carbon::parse($date);
 
         if ($this->duration_type == 'days') {
-            $date_obj->addDays($this->duration);
+            $date_obj->addDays((int) $this->duration);
         } elseif ($this->duration_type == 'months') {
-            $date_obj->addMonths($this->duration);
+            $date_obj->addMonths((int) $this->duration);
         } elseif ($this->duration_type == 'years') {
-            $date_obj->addYears($this->duration);
+            $date_obj->addYears((int) $this->duration);
         }
 
         return $date_obj->toDateTimeString();

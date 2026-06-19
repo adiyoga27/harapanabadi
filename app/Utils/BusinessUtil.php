@@ -404,7 +404,7 @@ class BusinessUtil extends Util
     {
         if (is_numeric($edit_transaction_period)) {
             return ['start' => \Carbon::today()
-                                ->subDays($edit_transaction_period),
+                                ->subDays((int) $edit_transaction_period),
                     'end' => \Carbon::today()
                 ];
         } elseif ($edit_transaction_period == 'fy') {

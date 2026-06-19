@@ -1919,16 +1919,16 @@ class SellPosController extends Controller
                         $last_generated = \Carbon::parse($last_generated_string);
 
                         if ($row->recur_interval_type == 'days') {
-                            $upcoming_invoice = $last_generated->addDays($row->recur_interval);
+                            $upcoming_invoice = $last_generated->addDays((int) $row->recur_interval);
                         } elseif ($row->recur_interval_type == 'months') {
                             if (!empty($row->subscription_repeat_on)) {
                                 $last_generated_string = $last_generated->format('Y-m');
                                 $last_generated = \Carbon::parse($last_generated_string . '-' . $row->subscription_repeat_on);
                             }
 
-                            $upcoming_invoice = $last_generated->addMonths($row->recur_interval);
+                            $upcoming_invoice = $last_generated->addMonths((int) $row->recur_interval);
                         } elseif ($row->recur_interval_type == 'years') {
-                            $upcoming_invoice = $last_generated->addYears($row->recur_interval);
+                            $upcoming_invoice = $last_generated->addYears((int) $row->recur_interval);
                         }
                     }
                     return !empty($upcoming_invoice) ? $this->transactionUtil->format_date($upcoming_invoice) : '';
