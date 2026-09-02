@@ -89,6 +89,22 @@
     var __new_notification_count_interval = "{{config('constants.new_notification_count_interval', 60)}}000";
 </script>
 
+<script>
+    $.fn.dataTable.defaults.initComplete = function( settings ) {
+        var table = new $.fn.dataTable.Api(settings);
+        var $input = $('div.dataTables_filter input', table.table().container());
+        if ( $input.length && !$input.data('enter-search-bound') ) {
+            $input.data('enter-search-bound', true)
+                .off('.DT')
+                .on('keyup.enterSearch', function(e) {
+                    if ( e.keyCode === 13 ) {
+                        table.search(this.value).draw();
+                    }
+                });
+        }
+    };
+</script>
+
 @if(file_exists(public_path('js/lang/' . session()->get('user.language', config('app.locale')) . '.js')))
     <script src="{{ asset('js/lang/' . session()->get('user.language', config('app.locale') ) . '.js?v=' . $asset_v) }}"></script>
 @else
