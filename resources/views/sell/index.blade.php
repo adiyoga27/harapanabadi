@@ -211,6 +211,13 @@ $(document).ready( function(){
         }
     });
 
+    $('#sell_table_filter input').unbind();
+    $('#sell_table_filter input').bind('keyup', function(e) {
+        if (e.keyCode == 13) {
+            sell_table.search(this.value).draw();
+        }
+    });
+
     $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status',  function() {
         sell_table.ajax.reload();
     });
