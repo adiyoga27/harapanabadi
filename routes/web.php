@@ -89,6 +89,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::resource('variation-templates', 'VariationTemplateController');
 
     Route::get('/products/stock-history/{id}', 'ProductController@productStockHistory');
+    Route::get('/stock-log', 'StockLogController@index');
+    Route::get('/stock-log/history/{id}', 'StockLogController@history');
     Route::get('/delete-media/{media_id}', 'ProductController@deleteMedia');
     Route::post('/products/mass-deactivate', 'ProductController@massDeactivate');
     Route::get('/products/activate/{id}', 'ProductController@activate');

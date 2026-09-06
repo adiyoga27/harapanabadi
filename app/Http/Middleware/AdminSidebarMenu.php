@@ -120,6 +120,11 @@ class AdminSidebarMenu
                                 __('lang_v1.list_products'),
                                 ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'products' && request()->segment(2) == '']
                             );
+                            $sub->url(
+                                action('StockLogController@index'),
+                                __('lang_v1.stock_log'),
+                                ['icon' => 'fa fas fa-history', 'active' => request()->segment(1) == 'stock-log' && request()->segment(2) == null]
+                            );
                         }
                         if (auth()->user()->can('product.create')) {
                             $sub->url(
